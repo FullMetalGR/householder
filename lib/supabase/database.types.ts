@@ -402,6 +402,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      complete_list: {
+        Args: { p_list_id: string; p_carry_over: boolean }
+        Returns: Json
+      }
       create_household: {
         Args: { p_name: string }
         Returns: {
@@ -432,6 +436,16 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      reorder_from: {
+        Args: { p_list_id: string }
+        Returns: string
+      }
+      suggest_items: {
+        Args: { p_list_id: string; p_prefix: string }
+        Returns: {
+          name: string
+        }[]
       }
     }
     Enums: {

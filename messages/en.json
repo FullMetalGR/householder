@@ -18,8 +18,54 @@
     "joinButton": "Join",
     "invalidCode": "Invalid or expired code"
   },
-  "tabs": { "lists": "Lists", "history": "History", "settings": "Settings" },
-  "placeholder": { "comingSoon": "Coming in the next step" },
+  "tabs": {
+    "lists": "Lists",
+    "history": "History",
+    "settings": "Settings"
+  },
+  "home": {
+    "newList": "New list",
+    "namePlaceholder": "e.g. Supermarket",
+    "create": "Create",
+    "cancel": "Cancel",
+    "counts": "{checked} of {total}",
+    "empty": "No active lists",
+    "emptyHint": "Tap + to get started",
+    "orderingSoon": "Online ordering",
+    "orderingSoonHint": "Coming in a later version"
+  },
+  "list": {
+    "inBasket": "{checked} of {total} in the basket",
+    "done": "Done",
+    "addPlaceholder": "Add an item...",
+    "empty": "Empty list",
+    "emptyHint": "Add the first item",
+    "notFound": "List not found",
+    "backToLists": "Back to lists",
+    "name": "Name",
+    "qty": "Quantity",
+    "note": "Note",
+    "save": "Save",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this item?",
+    "cancel": "Cancel",
+    "renameList": "Rename",
+    "deleteList": "Delete list",
+    "deleteListConfirm": "Delete this list?",
+    "completeTitle": "Complete the list?",
+    "completeDesc": "{count, plural, one {# item was not bought} other {# items were not bought}}",
+    "carryOver": "Carry over to a new list",
+    "completeAnyway": "Complete anyway",
+    "completed": "List completed",
+    "options": "Options"
+  },
+  "history": {
+    "empty": "No completed trips yet",
+    "items": "{count, plural, one {# item} other {# items}}",
+    "by": "by {name}",
+    "again": "Again",
+    "more": "More"
+  },
   "settings": {
     "title": "Settings",
     "profile": "Profile",
@@ -49,5 +95,7 @@
     "joining": "Joining...",
     "failed": "Invalid or expired code"
   },
-  "errors": { "generic": "Something went wrong" }
+  "errors": {
+    "generic": "Something went wrong"
+  }
 }

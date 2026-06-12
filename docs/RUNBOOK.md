@@ -42,3 +42,14 @@ ahead of the host, producing a transient "JWT issued at future time" failure in 
 router tests. It passes on re-run. GitHub Actions runners do not exhibit this (host and
 container share an accurate clock). If it bites locally, run `npm test` again or resync
 the WSL clock with `sudo hwclock -s`.
+
+### Known issue: type generation requires an access token
+
+Supabase CLI 2.106 fails `gen types typescript --local` (and `--db-url`) with
+LegacyPlatformAuthRequiredError unless a platform access token is configured,
+even though generation is a purely local operation. Until the CLI fixes this or
+a token is configured, new database functions and tables are added to
+`lib/supabase/database.types.ts` by hand, mirroring the generator's exact output
+format (jsonb maps to Json, uuid to string, returns table to a row array).
+After configuring a token, regenerate the file and diff it against the manual
+entries before committing.

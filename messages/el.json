@@ -18,8 +18,54 @@
     "joinButton": "Συμμετοχή",
     "invalidCode": "Άκυρος ή ληγμένος κωδικός"
   },
-  "tabs": { "lists": "Λίστες", "history": "Ιστορικό", "settings": "Ρυθμίσεις" },
-  "placeholder": { "comingSoon": "Έρχεται στο επόμενο βήμα" },
+  "tabs": {
+    "lists": "Λίστες",
+    "history": "Ιστορικό",
+    "settings": "Ρυθμίσεις"
+  },
+  "home": {
+    "newList": "Νέα λίστα",
+    "namePlaceholder": "π.χ. Σούπερ μάρκετ",
+    "create": "Δημιουργία",
+    "cancel": "Άκυρο",
+    "counts": "{checked} από {total}",
+    "empty": "Καμία ενεργή λίστα",
+    "emptyHint": "Πάτησε το + για να ξεκινήσεις",
+    "orderingSoon": "Online παραγγελία",
+    "orderingSoonHint": "Έρχεται σε επόμενη έκδοση"
+  },
+  "list": {
+    "inBasket": "{checked} από {total} στο καλάθι",
+    "done": "Τέλος",
+    "addPlaceholder": "Προσθήκη προϊόντος...",
+    "empty": "Κενή λίστα",
+    "emptyHint": "Πρόσθεσε το πρώτο προϊόν",
+    "notFound": "Η λίστα δεν βρέθηκε",
+    "backToLists": "Πίσω στις λίστες",
+    "name": "Όνομα",
+    "qty": "Ποσότητα",
+    "note": "Σημείωση",
+    "save": "Αποθήκευση",
+    "delete": "Διαγραφή",
+    "deleteConfirm": "Να διαγραφεί το προϊόν;",
+    "cancel": "Άκυρο",
+    "renameList": "Μετονομασία",
+    "deleteList": "Διαγραφή λίστας",
+    "deleteListConfirm": "Να διαγραφεί η λίστα;",
+    "completeTitle": "Ολοκλήρωση λίστας;",
+    "completeDesc": "{count, plural, one {# προϊόν δεν αγοράστηκε} other {# προϊόντα δεν αγοράστηκαν}}",
+    "carryOver": "Μεταφορά σε νέα λίστα",
+    "completeAnyway": "Ολοκλήρωση",
+    "completed": "Η λίστα ολοκληρώθηκε",
+    "options": "Επιλογές"
+  },
+  "history": {
+    "empty": "Κανένα ολοκληρωμένο ψώνιο ακόμα",
+    "items": "{count, plural, one {# προϊόν} other {# προϊόντα}}",
+    "by": "από {name}",
+    "again": "Ξανά",
+    "more": "Περισσότερα"
+  },
   "settings": {
     "title": "Ρυθμίσεις",
     "profile": "Προφίλ",
@@ -49,5 +95,7 @@
     "joining": "Γίνεται συμμετοχή...",
     "failed": "Άκυρος ή ληγμένος κωδικός"
   },
-  "errors": { "generic": "Κάτι πήγε στραβά" }
+  "errors": {
+    "generic": "Κάτι πήγε στραβά"
+  }
 }

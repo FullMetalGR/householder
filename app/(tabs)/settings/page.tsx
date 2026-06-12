@@ -206,7 +206,7 @@ export default function SettingsPage() {
             <Trash2 size={16} /> {t("leave")}
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>{t("leaveConfirm")}</DialogTitle></DialogHeader>
           <DialogFooter>
             <Button variant="destructive" onClick={() => leave.mutate({ householdId: householdId! })}>
