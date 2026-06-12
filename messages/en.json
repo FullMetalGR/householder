@@ -1,0 +1,53 @@
+{
+  "auth": {
+    "title": "Householder",
+    "google": "Sign in with Google",
+    "or": "or",
+    "emailPlaceholder": "Your email",
+    "magicLink": "Send me a link",
+    "linkSent": "Link sent. Check your email.",
+    "linkError": "Something went wrong. Try again."
+  },
+  "onboarding": {
+    "title": "Welcome",
+    "createTitle": "Create your household",
+    "namePlaceholder": "e.g. Our home",
+    "createButton": "Create",
+    "joinTitle": "I have an invite code",
+    "codePlaceholder": "e.g. ABCD2345",
+    "joinButton": "Join",
+    "invalidCode": "Invalid or expired code"
+  },
+  "tabs": { "lists": "Lists", "history": "History", "settings": "Settings" },
+  "placeholder": { "comingSoon": "Coming in the next step" },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "displayName": "Name",
+    "save": "Save",
+    "saved": "Saved",
+    "members": "Members",
+    "owner": "Owner",
+    "remove": "Remove",
+    "invites": "Invites",
+    "newInvite": "New invite",
+    "share": "Share",
+    "copied": "Copied",
+    "revoke": "Revoke",
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "leave": "Leave household",
+    "leaveConfirm": "Are you sure you want to leave?",
+    "leaveBlocked": "Remove the other members first",
+    "signOut": "Sign out",
+    "cancel": "Cancel"
+  },
+  "join": {
+    "joining": "Joining...",
+    "failed": "Invalid or expired code"
+  },
+  "errors": { "generic": "Something went wrong" }
+}

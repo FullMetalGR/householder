@@ -1,0 +1,53 @@
+{
+  "auth": {
+    "title": "Householder",
+    "google": "Σύνδεση με Google",
+    "or": "ή",
+    "emailPlaceholder": "Το email σου",
+    "magicLink": "Στείλε μου σύνδεσμο",
+    "linkSent": "Ο σύνδεσμος στάλθηκε. Έλεγξε το email σου.",
+    "linkError": "Κάτι πήγε στραβά. Δοκίμασε ξανά."
+  },
+  "onboarding": {
+    "title": "Καλώς ήρθες",
+    "createTitle": "Φτιάξε το νοικοκυριό σου",
+    "namePlaceholder": "π.χ. Σπίτι μας",
+    "createButton": "Δημιουργία",
+    "joinTitle": "Έχω κωδικό πρόσκλησης",
+    "codePlaceholder": "π.χ. ABCD2345",
+    "joinButton": "Συμμετοχή",
+    "invalidCode": "Άκυρος ή ληγμένος κωδικός"
+  },
+  "tabs": { "lists": "Λίστες", "history": "Ιστορικό", "settings": "Ρυθμίσεις" },
+  "placeholder": { "comingSoon": "Έρχεται στο επόμενο βήμα" },
+  "settings": {
+    "title": "Ρυθμίσεις",
+    "profile": "Προφίλ",
+    "displayName": "Όνομα",
+    "save": "Αποθήκευση",
+    "saved": "Αποθηκεύτηκε",
+    "members": "Μέλη",
+    "owner": "Ιδιοκτήτης",
+    "remove": "Αφαίρεση",
+    "invites": "Προσκλήσεις",
+    "newInvite": "Νέα πρόσκληση",
+    "share": "Κοινοποίηση",
+    "copied": "Αντιγράφηκε",
+    "revoke": "Ανάκληση",
+    "language": "Γλώσσα",
+    "theme": "Θέμα",
+    "themeLight": "Φωτεινό",
+    "themeDark": "Σκούρο",
+    "themeSystem": "Σύστημα",
+    "leave": "Αποχώρηση από το νοικοκυριό",
+    "leaveConfirm": "Σίγουρα θες να αποχωρήσεις;",
+    "leaveBlocked": "Αφαίρεσε πρώτα τα άλλα μέλη",
+    "signOut": "Αποσύνδεση",
+    "cancel": "Άκυρο"
+  },
+  "join": {
+    "joining": "Γίνεται συμμετοχή...",
+    "failed": "Άκυρος ή ληγμένος κωδικός"
+  },
+  "errors": { "generic": "Κάτι πήγε στραβά" }
+}
