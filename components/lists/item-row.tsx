@@ -20,11 +20,13 @@ export function ItemRow({
   member,
   onToggle,
   onOpen,
+  disabled,
 }: {
   item: ListItem;
   member: MemberInfo | undefined;
   onToggle: (checked: boolean) => void;
   onOpen: () => void;
+  disabled?: boolean;
 }) {
   const subtitle = [item.qty, item.note].filter(Boolean).join(" · ");
   return (
@@ -33,7 +35,10 @@ export function ItemRow({
         type="button"
         aria-pressed={item.checked}
         aria-label={item.name}
-        onClick={() => onToggle(!item.checked)}
+        disabled={disabled}
+        onClick={() => {
+          if (!disabled) onToggle(!item.checked);
+        }}
         className="shrink-0 p-2 text-primary"
       >
         {item.checked ? <CheckCircle2 size={24} /> : <Circle size={24} className="text-muted-foreground" />}

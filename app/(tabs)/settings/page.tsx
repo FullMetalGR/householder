@@ -18,6 +18,7 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { NotificationsCard } from "@/components/settings/notifications-card";
 import { Trash2, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -97,6 +98,12 @@ export default function SettingsPage() {
 
   async function signOut() {
     await supabaseBrowser().auth.signOut();
+    // A shared device must not show the previous member's lists out of the
+    // restored cache: drop the live cache, its persisted copy, and the
+    // device's household selection.
+    qc.clear();
+    localStorage.removeItem("hh.queryCache");
+    localStorage.removeItem("hh.activeHousehold");
     router.replace("/sign-in");
   }
 
@@ -199,6 +206,8 @@ export default function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      <NotificationsCard />
 
       <Dialog>
         <DialogTrigger asChild>

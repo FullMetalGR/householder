@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTRPC } from "@/lib/trpc/client";
+import { useOnline } from "@/lib/use-online";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -37,6 +38,7 @@ function ItemSheetBody({ item, onClose }: { item: ListItem; onClose: () => void 
   const te = useTranslations("errors");
   const trpc = useTRPC();
   const qc = useQueryClient();
+  const online = useOnline();
   const [name, setName] = useState(item.name);
   const [qty, setQty] = useState(item.qty ?? "");
   const [note, setNote] = useState(item.note ?? "");
@@ -83,7 +85,7 @@ function ItemSheetBody({ item, onClose }: { item: ListItem; onClose: () => void 
             <DialogFooter>
               <Button
                 variant="destructive"
-                disabled={remove.isPending}
+                disabled={remove.isPending || !online}
                 onClick={() => remove.mutate({ itemId: item.id })}
               >
                 {t("delete")}
@@ -92,7 +94,7 @@ function ItemSheetBody({ item, onClose }: { item: ListItem; onClose: () => void 
           </DialogContent>
         </Dialog>
         <Button
-          disabled={!name.trim() || update.isPending}
+          disabled={!name.trim() || update.isPending || !online}
           onClick={() =>
             update.mutate({
               itemId: item.id,

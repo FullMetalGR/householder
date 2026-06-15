@@ -32,5 +32,8 @@
 next-env.d.ts
 node_modules/
 npm-debug.log*
+supabase/functions/.env.local
 yarn-debug.log*
 yarn-error.log*
+playwright-report/
+test-results/

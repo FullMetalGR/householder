@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import type { RealtimePostgresDeletePayload } from "@supabase/supabase-js";
+import type { RealtimeChannel, RealtimePostgresDeletePayload } from "@supabase/supabase-js";
 import { useTRPC } from "@/lib/trpc/client";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 
@@ -35,18 +35,31 @@ export function useHouseholdRealtime(householdId: string | undefined) {
     };
 
     const filter = `household_id=eq.${householdId}`;
-    const channel = supabase
-      .channel(`household-${householdId}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "lists", filter }, invalidate)
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "lists", filter }, invalidate)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "list_items", filter }, invalidate)
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "list_items", filter }, invalidate)
-      .on("postgres_changes", { event: "DELETE", schema: "public", table: "lists" }, onDelete)
-      .on("postgres_changes", { event: "DELETE", schema: "public", table: "list_items" }, onDelete)
-      .subscribe();
+    let channel: RealtimeChannel | null = null;
+    let cancelled = false;
+
+    // These subscriptions are RLS-authorized, so the realtime connection must
+    // carry the user JWT. On a fresh page the client's token fetch is still in
+    // flight when this effect runs; subscribing immediately would join the
+    // channel with anon claims and the subscription would fail silently.
+    // Resolving the token first removes that race.
+    (async () => {
+      await supabase.realtime.setAuth();
+      if (cancelled) return;
+      channel = supabase
+        .channel(`household-${householdId}`)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "lists", filter }, invalidate)
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "lists", filter }, invalidate)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "list_items", filter }, invalidate)
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "list_items", filter }, invalidate)
+        .on("postgres_changes", { event: "DELETE", schema: "public", table: "lists" }, onDelete)
+        .on("postgres_changes", { event: "DELETE", schema: "public", table: "list_items" }, onDelete)
+        .subscribe();
+    })();
 
     return () => {
-      supabase.removeChannel(channel);
+      cancelled = true;
+      if (channel) supabase.removeChannel(channel);
     };
   }, [householdId, qc, trpc]);
 }

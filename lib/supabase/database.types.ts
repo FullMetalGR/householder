@@ -402,6 +402,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_push_subscription: {
+        Args: {
+          p_endpoint: string
+          p_p256dh: string
+          p_auth: string
+          p_user_agent: string
+        }
+        Returns: undefined
+      }
       complete_list: {
         Args: { p_list_id: string; p_carry_over: boolean }
         Returns: Json
@@ -420,6 +429,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      keepalive: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       leave_household: { Args: { p_household_id: string }; Returns: undefined }
       redeem_invite: {

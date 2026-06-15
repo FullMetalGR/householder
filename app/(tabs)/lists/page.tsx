@@ -11,6 +11,7 @@ import { useHouseholdRealtime } from "@/lib/use-household-realtime";
 import { HouseholdSwitcher } from "@/components/lists/household-switcher";
 import { ListCard } from "@/components/lists/list-card";
 import { NewListDialog } from "@/components/lists/new-list-dialog";
+import { PushNudge } from "@/components/push-nudge";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function ListsPage() {
@@ -59,7 +60,12 @@ export default function ListsPage() {
         </CardContent>
       </Card>
 
-      {householdId && <NewListDialog householdId={householdId} />}
+      {householdId && (
+        <>
+          <NewListDialog householdId={householdId} />
+          <PushNudge hasLists={(active.data?.length ?? 0) > 0} />
+        </>
+      )}
     </div>
   );
 }

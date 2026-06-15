@@ -89,13 +89,29 @@
     "leaveConfirm": "Are you sure you want to leave?",
     "leaveBlocked": "Remove the other members first",
     "signOut": "Sign out",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "notifications": "Notifications",
+    "pushUnsupported": "Not supported in this browser",
+    "pushInstallFirst": "Add the app to your home screen from Safari first",
+    "pushDenied": "Notifications are blocked in the browser",
+    "pushError": "Something went wrong with notifications",
+    "pushNudgeTitle": "Enable notifications?",
+    "pushNudgeDesc": "Know right away when someone adds items to your lists.",
+    "enableNotifications": "Enable",
+    "later": "Later"
   },
   "join": {
     "joining": "Joining...",
     "failed": "Invalid or expired code"
   },
+  "offline": {
+    "title": "You are offline",
+    "hint": "Reconnect to the internet and try again.",
+    "banner": "Offline: changes are temporarily disabled"
+  },
   "errors": {
-    "generic": "Something went wrong"
+    "generic": "Something went wrong",
+    "boundaryTitle": "Something went wrong",
+    "retry": "Try again"
   }
 }

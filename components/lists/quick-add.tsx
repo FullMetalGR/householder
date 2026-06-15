@@ -5,12 +5,14 @@ import { useTranslations } from "next-intl";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useTRPC } from "@/lib/trpc/client";
+import { useOnline } from "@/lib/use-online";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function QuickAdd({ listId, onAdd }: { listId: string; onAdd: (name: string) => void }) {
   const t = useTranslations("list");
   const trpc = useTRPC();
+  const online = useOnline();
   const [value, setValue] = useState("");
   const deferred = useDeferredValue(value);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -36,6 +38,7 @@ export function QuickAdd({ listId, onAdd }: { listId: string; onAdd: (name: stri
             <button
               key={name}
               type="button"
+              disabled={!online}
               onClick={() => submit(name)}
               className="shrink-0 rounded-full border bg-card px-3 py-1 text-sm"
             >
@@ -58,8 +61,9 @@ export function QuickAdd({ listId, onAdd }: { listId: string; onAdd: (name: stri
           placeholder={t("addPlaceholder")}
           autoComplete="off"
           enterKeyHint="done"
+          disabled={!online}
         />
-        <Button type="submit" size="icon" aria-label={t("addPlaceholder")} disabled={!value.trim()}>
+        <Button type="submit" size="icon" aria-label={t("addPlaceholder")} disabled={!value.trim() || !online}>
           <Plus size={20} />
         </Button>
       </form>

@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useTRPC } from "@/lib/trpc/client";
+import { useOnline } from "@/lib/use-online";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,6 +20,7 @@ export function NewListDialog({ householdId }: { householdId: string }) {
   const trpc = useTRPC();
   const qc = useQueryClient();
   const router = useRouter();
+  const online = useOnline();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
 
@@ -64,7 +66,7 @@ export function NewListDialog({ householdId }: { householdId: string }) {
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
               {t("cancel")}
             </Button>
-            <Button type="submit" disabled={!name.trim() || create.isPending}>
+            <Button type="submit" disabled={!name.trim() || create.isPending || !online}>
               {t("create")}
             </Button>
           </DialogFooter>

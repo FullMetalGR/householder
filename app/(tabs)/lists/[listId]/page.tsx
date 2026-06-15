@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useTRPC } from "@/lib/trpc/client";
 import { useActiveHousehold } from "@/lib/active-household";
 import { useHouseholdRealtime } from "@/lib/use-household-realtime";
+import { useOnline } from "@/lib/use-online";
 import { Button } from "@/components/ui/button";
 import { ItemRow, type MemberInfo, type ListItem } from "@/components/lists/item-row";
 import { QuickAdd } from "@/components/lists/quick-add";
@@ -27,6 +28,7 @@ export default function ListDetailPage() {
   const qc = useQueryClient();
   const router = useRouter();
   const { householdId, setActive } = useActiveHousehold();
+  const online = useOnline();
 
   const list = useQuery({
     ...trpc.list.get.queryOptions({ listId }),
@@ -200,7 +202,7 @@ export default function ListDetailPage() {
             {t("inBasket", { checked: checkedCount, total: items.length })}
           </p>
         </div>
-        <Button size="sm" onClick={onDone} disabled={items.length === 0 || complete.isPending}>
+        <Button size="sm" onClick={onDone} disabled={items.length === 0 || complete.isPending || !online}>
           {t("done")}
         </Button>
         {list.data && <ListMenu listId={listId} currentName={list.data.name} />}
@@ -222,6 +224,7 @@ export default function ListDetailPage() {
             member={item.added_by ? memberInfo.get(item.added_by) : undefined}
             onToggle={(checked) => setChecked.mutate({ itemId: item.id, checked })}
             onOpen={() => setSelectedItem(item)}
+            disabled={!online}
           />
         ))}
       </div>

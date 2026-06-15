@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useOnline } from "@/lib/use-online";
 import { Button } from "@/components/ui/button";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
@@ -20,6 +21,7 @@ export function CompleteDialog({
   onCancel: () => void;
 }) {
   const t = useTranslations("list");
+  const online = useOnline();
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onCancel()}>
       <DialogContent>
@@ -28,10 +30,10 @@ export function CompleteDialog({
           <DialogDescription>{t("completeDesc", { count: uncheckedCount })}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex-col gap-2 sm:flex-col">
-          <Button disabled={pending} onClick={() => onConfirm(true)}>
+          <Button disabled={pending || !online} onClick={() => onConfirm(true)}>
             {t("carryOver")}
           </Button>
-          <Button variant="outline" disabled={pending} onClick={() => onConfirm(false)}>
+          <Button variant="outline" disabled={pending || !online} onClick={() => onConfirm(false)}>
             {t("completeAnyway")}
           </Button>
           <Button variant="ghost" onClick={onCancel}>{t("cancel")}</Button>

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useTRPC } from "@/lib/trpc/client";
 import { useActiveHousehold } from "@/lib/active-household";
 import { useHouseholdRealtime } from "@/lib/use-household-realtime";
+import { useOnline } from "@/lib/use-online";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -19,6 +20,7 @@ export default function HistoryPage() {
   const trpc = useTRPC();
   const qc = useQueryClient();
   const router = useRouter();
+  const online = useOnline();
   const { householdId } = useActiveHousehold();
   useHouseholdRealtime(householdId);
 
@@ -75,7 +77,7 @@ export default function HistoryPage() {
             <Button
               variant="outline"
               size="sm"
-              disabled={reorder.isPending}
+              disabled={reorder.isPending || !online}
               onClick={() => reorder.mutate({ listId: trip.id })}
             >
               <RotateCcw size={14} /> {t("again")}

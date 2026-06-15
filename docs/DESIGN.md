@@ -112,7 +112,7 @@ One public-read `avatars` bucket. `storage.objects` carries INSERT and UPDATE po
 - `item`: `add({ listId, name, qty?, note? })`, `update({ itemId, name?, qty?, note? })`, `setChecked({ itemId, checked })`, `remove`, `suggest({ listId, prefix })`.
 - `profile`: `get`, `update({ displayName?, locale?, avatarUrl? })`, `getAvatarUploadUrl`.
 - `push`: `subscribe(subscription)`, `unsubscribe(endpoint)`.
-- `supermarket` (v1 ships the types and stub only): `providers.list`, `createOrder(listId)`.
+- `supermarket` (v1 ships the types and stub only): `providers.list`, `createOrder(listId, providerId)`.
 
 ### Semantics worth pinning
 
@@ -206,7 +206,7 @@ interface SupermarketProvider {
 }
 ```
 
-- `supermarket.providers.list` returns the registered providers (empty in v1); `supermarket.createOrder(listId)` maps list items to `OrderItem`s and delegates.
+- `supermarket.providers.list` returns the registered providers (empty in v1); `supermarket.createOrder(listId, providerId)` maps list items to `OrderItem`s and delegates.
 - Design consequences already absorbed: items carry optional qty and note; lists are the unit of ordering; the Home screen reserves the entry point; provider credentials will live in server-side env vars only.
 - Sklavenitis has no public API today; the adapter will be written when the integration becomes concrete (official API, partner program, or supervised automation, to be evaluated then). Nothing in v1 depends on that choice.
 

@@ -7,6 +7,7 @@ export default defineConfig({
     globalSetup: ["./tests/global-setup.ts"],
     testTimeout: 20000,
     hookTimeout: 20000,
+    exclude: ["tests/e2e/**", "node_modules/**"],
   },
   resolve: { alias: { "@": path.resolve(__dirname, ".") } },
 });

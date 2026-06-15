@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTRPC } from "@/lib/trpc/client";
+import { useOnline } from "@/lib/use-online";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,6 +23,7 @@ export function ListMenu({ listId, currentName }: { listId: string; currentName:
   const trpc = useTRPC();
   const qc = useQueryClient();
   const router = useRouter();
+  const online = useOnline();
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [name, setName] = useState(currentName);
@@ -70,7 +72,7 @@ export function ListMenu({ listId, currentName }: { listId: string; currentName:
           <DialogFooter>
             <Button variant="ghost" onClick={() => setRenameOpen(false)}>{t("cancel")}</Button>
             <Button
-              disabled={!name.trim() || rename.isPending}
+              disabled={!name.trim() || rename.isPending || !online}
               onClick={() => rename.mutate({ listId, name: name.trim() })}
             >
               {t("save")}
@@ -86,7 +88,7 @@ export function ListMenu({ listId, currentName }: { listId: string; currentName:
             <Button variant="ghost" onClick={() => setDeleteOpen(false)}>{t("cancel")}</Button>
             <Button
               variant="destructive"
-              disabled={deleteList.isPending}
+              disabled={deleteList.isPending || !online}
               onClick={() => deleteList.mutate({ listId })}
             >
               {t("deleteList")}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { List, History, Settings } from "lucide-react";
+import { OfflineBanner } from "@/components/offline-banner";
 
 export default async function TabsLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations("tabs");
@@ -11,6 +12,7 @@ export default async function TabsLayout({ children }: { children: React.ReactNo
   ];
   return (
     <div className="flex min-h-dvh flex-col">
+      <OfflineBanner />
       <main className="flex-1 pb-20">{children}</main>
       <nav className="fixed inset-x-0 bottom-0 border-t bg-card">
         <div className="mx-auto flex max-w-md justify-around py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">

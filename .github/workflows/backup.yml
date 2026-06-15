@@ -1,0 +1,32 @@
+name: Backup
+on:
+  schedule:
+    - cron: "0 3 1 * *"
+  workflow_dispatch:
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check configuration
+        id: config
+        run: echo "ready=${{ secrets.SUPABASE_DB_URL != '' }}" >> "$GITHUB_OUTPUT"
+      - uses: supabase/setup-cli@v1
+        if: steps.config.outputs.ready == 'true'
+        with:
+          version: latest
+      - name: Dump schema and data
+        if: steps.config.outputs.ready == 'true'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f schema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" --data-only -f data.sql
+      - uses: actions/upload-artifact@v4
+        if: steps.config.outputs.ready == 'true'
+        with:
+          name: db-backup-${{ github.run_number }}
+          path: |
+            schema.sql
+            data.sql
+          retention-days: 90

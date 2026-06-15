@@ -13,14 +13,58 @@
 4. **Auth URLs**: Supabase Dashboard, Auth, URL configuration:
    site URL `https://<app>.vercel.app`, redirect `https://<app>.vercel.app/auth/callback`.
 5. **Vercel**: import the GitHub repo (Hobby plan). Env vars:
-   `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_APP_URL`.
-6. **Keep-alive** (Plan 3 adds the route + vercel.json cron): prevents the 7-day free pause.
+   `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_APP_URL`,
+   and `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (see Push notifications below).
+6. **Keep-alive**: `vercel.json` ships a daily cron hitting `/api/keepalive`,
+   which performs a real anonymous query; nothing to configure beyond deploying.
 
 ## Known free-tier constraints
 
 - Supabase Free pauses after 7 idle days; restore is manual in the dashboard.
 - No automatic DB backups on Free (Plan 3 adds a monthly pg_dump GitHub Action).
 - Built-in auth mailer delivers only to team addresses, ~2/hour: Resend is mandatory.
+
+## Push notifications (one-time per environment)
+
+1. Generate keys: `node scripts/generate-vapid-keys.mjs`. Keep both outputs.
+2. Edge Function secrets (Dashboard, Edge Functions, push, Secrets, or
+   `npx supabase secrets set`):
+   - `VAPID_KEYS_JSON`: the single-line JSON from step 1
+   - `VAPID_CONTACT_EMAIL`: a reachable mailbox (push services require it)
+   - `PUSH_FUNCTION_SECRET`: a long random string (`openssl rand -hex 32`)
+   - `APP_URL`: `https://<app>.vercel.app`
+3. Deploy the function: `npx supabase functions deploy push`
+   (`verify_jwt = false` ships in `supabase/config.toml`; the shared secret
+   header is the gate).
+4. Vault secrets so pg_cron can call the function (SQL editor, once):
+
+   select vault.create_secret('https://<ref>.supabase.co/functions/v1/push', 'push_function_url');
+   select vault.create_secret('<same value as PUSH_FUNCTION_SECRET>', 'push_function_secret');
+
+   The cron jobs themselves were created by migration 0005 during `db push`.
+5. Vercel env: add `NEXT_PUBLIC_VAPID_PUBLIC_KEY` from step 1.
+6. Verification: install the PWA on two phones, enable notifications on both
+   (Settings switch), close the app on one, add an item from the other, and
+   expect one digest notification within about a minute.
+
+## Backups
+
+`.github/workflows/backup.yml` dumps schema and data monthly into a 90 day
+artifact. It needs one repository secret: `SUPABASE_DB_URL` (Dashboard,
+Database, Connection string, URI; the session pooler form works). Until the
+secret exists the workflow skips itself and stays green. Run it once manually
+(Actions, Backup, Run workflow) after configuring to confirm.
+
+## Deploy order (first production deploy)
+
+1. Supabase: create project, `npx supabase link --project-ref <ref>`,
+   `npx supabase db push` (applies 0001..0006 including cron jobs).
+2. Auth: Google OAuth, Resend SMTP, site URL and redirect URLs (sections above).
+3. Push: the section above (secrets, function deploy, Vault inserts).
+4. Vercel: import repo, set the four `NEXT_PUBLIC_*` env vars, deploy.
+5. GitHub: add `SUPABASE_DB_URL` secret, run the Backup workflow once.
+6. Phones: open the Vercel URL, install (Android: install prompt; iPhone:
+   Share, Add to Home Screen), sign in, enable notifications.
 
 ## Play Store later (TWA)
 
