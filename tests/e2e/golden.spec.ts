@@ -1,20 +1,11 @@
 import { test, expect, type BrowserContext, type Page } from "@playwright/test";
-import { magicLinkFor } from "./mailpit";
+import { signIn } from "./auth";
 
 // The golden path: two household members drive the whole product surface in
 // one continuous story. Runs against the production build and the local
 // Supabase stack; the live-sync assertions must pass without any reload.
 
 const CONTEXT_PERMISSIONS = ["notifications", "clipboard-read", "clipboard-write"];
-
-async function signIn(page: Page, email: string) {
-  await page.goto("/sign-in");
-  await page.getByPlaceholder("Το email σου").fill(email);
-  await page.getByRole("button", { name: "Στείλε μου σύνδεσμο" }).click();
-  const link = await magicLinkFor(email);
-  await page.goto(link);
-  await page.waitForURL("**/onboarding");
-}
 
 async function quickAdd(page: Page, name: string) {
   const input = page.getByPlaceholder("Προσθήκη προϊόντος...");

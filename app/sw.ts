@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
-import { Serwist } from "serwist";
-import { defaultCache } from "@serwist/turbopack/worker";
+import { NetworkOnly, Serwist } from "serwist";
+import { defaultCache, PAGES_CACHE_NAME } from "@serwist/turbopack/worker";
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -10,12 +10,27 @@ declare global {
 }
 declare const self: ServiceWorkerGlobalScope & WorkerGlobalScope;
 
+// Routes whose response is pure auth/membership routing. Serving a cached
+// copy shows the wrong identity state: start_url "/" once cached the
+// pre-household onboarding redirect, so every launch with a failed first
+// fetch (phone radio waking) offered household creation to a signed-in
+// member. These must always hit the network; offline falls through to the
+// /~offline fallback below.
+const AUTH_ROUTING = [/^\/$/, /^\/onboarding$/, /^\/sign-in$/, /^\/auth\//, /^\/join\//];
+
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  runtimeCaching: [
+    {
+      matcher: ({ sameOrigin, url: { pathname } }) =>
+        sameOrigin && AUTH_ROUTING.some((r) => r.test(pathname)),
+      handler: new NetworkOnly(),
+    },
+    ...defaultCache,
+  ],
   fallbacks: {
     entries: [
       {
@@ -28,6 +43,19 @@ const serwist = new Serwist({
   },
 });
 serwist.addEventListeners();
+
+// Heal already-deployed clients: their runtime page caches may hold the
+// poisoned pre-household "/" entry described above. Dropping the page caches
+// is safe (they repopulate); precache and asset caches are untouched.
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    Promise.all(
+      ["others", PAGES_CACHE_NAME.html, PAGES_CACHE_NAME.rsc, PAGES_CACHE_NAME.rscPrefetch].map(
+        (name) => caches.delete(name)
+      )
+    )
+  );
+});
 
 // Classic push path (Android Chrome). The payload is the Declarative Web Push
 // JSON, so Safari 18.4+ handles the same bytes without ever running this code.

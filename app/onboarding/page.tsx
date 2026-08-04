@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,16 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
+
+  // A member with a household must never see this page: a stale cached
+  // launch document (or a deep link) can land them here, and re-creating
+  // makes a duplicate household. Only a confirmed membership redirects.
+  const mine = useQuery(trpc.household.listMine.queryOptions());
+  const hasHousehold = (mine.data?.length ?? 0) > 0;
+  useEffect(() => {
+    if (hasHousehold) router.replace("/lists");
+  }, [hasHousehold, router]);
+  const membershipUnknown = mine.isLoading || hasHousehold;
 
   const create = useMutation(
     trpc.household.create.mutationOptions({
@@ -37,7 +47,7 @@ export default function OnboardingPage() {
         <CardHeader><CardTitle>{t("createTitle")}</CardTitle></CardHeader>
         <CardContent className="flex gap-2">
           <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("namePlaceholder")} />
-          <Button disabled={!name.trim() || create.isPending} onClick={() => create.mutate({ name })}>
+          <Button disabled={!name.trim() || create.isPending || membershipUnknown} onClick={() => create.mutate({ name })}>
             {t("createButton")}
           </Button>
         </CardContent>

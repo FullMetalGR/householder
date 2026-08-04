@@ -13,7 +13,10 @@ export default defineConfig({
   webServer: {
     command: "npm run start",
     url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
+    // Never reuse a lingering server: scripts/e2e.mjs rebuilds .next first,
+    // and a server started before the rebuild serves the old buildId, which
+    // 500s the new build's precache manifest and wedges SW installation.
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 });
