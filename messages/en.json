@@ -38,6 +38,7 @@
     "inBasket": "{checked} of {total} in the basket",
     "done": "Done",
     "addPlaceholder": "Add an item...",
+    "addDetails": "Item details",
     "empty": "Empty list",
     "emptyHint": "Add the first item",
     "notFound": "List not found",

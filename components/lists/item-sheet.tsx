@@ -26,7 +26,9 @@ export function ItemSheet({
 }) {
   return (
     <Sheet open={!!item} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent side="bottom" className="rounded-t-xl" aria-describedby={undefined}>
+      {/* Top placement on purpose: a bottom sheet is covered by the mobile
+          keyboard the moment an input gains focus. */}
+      <SheetContent side="top" className="rounded-b-xl" aria-describedby={undefined}>
         {item && <ItemSheetBody key={item.id} item={item} onClose={onClose} />}
       </SheetContent>
     </Sheet>
@@ -63,7 +65,7 @@ function ItemSheetBody({ item, onClose }: { item: ListItem; onClose: () => void 
   );
 
   return (
-    <div className="flex flex-col gap-3 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+    <div className="flex flex-col gap-3 p-4 pt-[max(1rem,env(safe-area-inset-top))]">
       <SheetHeader className="p-0">
         <SheetTitle className="truncate">{item.name}</SheetTitle>
       </SheetHeader>

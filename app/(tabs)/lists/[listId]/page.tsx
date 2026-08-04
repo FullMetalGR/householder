@@ -110,10 +110,11 @@ export default function ListDetailPage() {
       onMutate: async (input) => {
         await qc.cancelQueries({ queryKey: getKey });
         const previous = qc.getQueryData<ListDetail>(getKey);
+        const optimisticId = crypto.randomUUID();
         if (previous) {
           const maxPosition = previous.items.reduce((m, i) => Math.max(m, Number(i.position)), 0);
           const optimistic: ListDetail["items"][number] = {
-            id: crypto.randomUUID(),
+            id: optimisticId,
             list_id: listId,
             household_id: previous.household_id,
             name: input.name,
@@ -131,7 +132,23 @@ export default function ListDetailPage() {
             items: sortItems([...previous.items, optimistic]),
           });
         }
-        return { previous };
+        return { previous, optimisticId };
+      },
+      onSuccess: (row, _input, context) => {
+        // Swap the optimistic row for the server row as soon as it exists:
+        // the localStorage persister can snapshot the cache while the
+        // placeholder id is live, and a restored placeholder 404s any later
+        // mutation that targets it.
+        qc.setQueryData<ListDetail>(getKey, (current) =>
+          current
+            ? {
+                ...current,
+                items: sortItems(
+                  current.items.map((i) => (i.id === context.optimisticId ? row : i))
+                ),
+              }
+            : current
+        );
       },
       onError: (_err, _input, context) => {
         if (context?.previous) qc.setQueryData(getKey, context.previous);
@@ -229,7 +246,7 @@ export default function ListDetailPage() {
         ))}
       </div>
 
-      <QuickAdd listId={listId} onAdd={(name) => addItem.mutate({ listId, name })} />
+      <QuickAdd listId={listId} onAdd={(input) => addItem.mutate({ listId, ...input })} />
 
       <ItemSheet item={selectedItem} onClose={() => setSelectedItem(null)} />
       <CompleteDialog

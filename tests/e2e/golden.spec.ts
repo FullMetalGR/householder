@@ -64,6 +64,25 @@ test("golden path: two members share lists live", async ({ browser }) => {
     await quickAdd(a, "Γάλα");
     await quickAdd(a, "Ψωμί");
 
+    // 4b. A adds an item with quantity and note directly from the quick-add
+    // expander, then checks it off so the completion counts below stay at 2.
+    await a.getByRole("button", { name: "Λεπτομέρειες προϊόντος" }).click();
+    await a.getByPlaceholder("Ποσότητα").fill("6");
+    await a.getByPlaceholder("Σημείωση").fill("μεγάλα");
+    const detailedAdd = a.waitForResponse(
+      (r) =>
+        r.url().includes("/api/trpc/") &&
+        r.url().includes("item.add") &&
+        r.request().method() === "POST"
+    );
+    await a.getByPlaceholder("Προσθήκη προϊόντος...").fill("Αυγά");
+    await a.getByPlaceholder("Προσθήκη προϊόντος...").press("Enter");
+    await detailedAdd;
+    await expect(itemToggle(a, "Αυγά")).toBeVisible();
+    await expect(a.getByText("6 · μεγάλα")).toBeVisible();
+    // The expander collapses and clears after a successful add.
+    await expect(a.getByPlaceholder("Ποσότητα")).toHaveCount(0);
+
     // 5. A creates an invite in Settings and reads the code.
     await a.goto("/settings");
     await a.getByRole("button", { name: "Νέα πρόσκληση" }).click();
@@ -87,6 +106,11 @@ test("golden path: two members share lists live", async ({ browser }) => {
     // default; the assertion still resolves the instant the item renders.
     await a.goto(listUrl);
     await expect(itemToggle(a, "Ψωμί")).toBeVisible({ timeout: 15_000 });
+    // Check off the detailed item now that rows carry server ids (a toggle
+    // right after an optimistic add would target the placeholder id), so the
+    // completion counts below stay at 2.
+    await itemToggle(a, "Αυγά").click();
+    await expect(itemToggle(a, "Αυγά")).toHaveAttribute("aria-pressed", "true");
     await b.getByRole("link", { name: /Λαϊκή/ }).click();
     await b.waitForURL(/\/lists\/[0-9a-f-]+$/);
     await expect(itemToggle(b, "Ψωμί")).toBeVisible({ timeout: 15_000 });
