@@ -14,10 +14,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - uses: supabase/setup-cli@v1
-        with:
-          version: latest
-      - run: supabase start
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
@@ -25,6 +21,10 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
           NEXT_PUBLIC_SUPABASE_ANON_KEY: build-time-placeholder
           NEXT_PUBLIC_APP_URL: http://localhost:3000
+      # The repo-pinned CLI (devDependency), not setup-cli@latest: a floating
+      # CLI version already broke lint once via generated .temp files. Started
+      # only here because just `npm test` needs the local stack.
+      - run: npx supabase start
       - run: npm test
         env:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
@@ -38,10 +38,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - uses: supabase/setup-cli@v1
-        with:
-          version: latest
-      - run: supabase start
+      - run: npx supabase start
       - run: npx playwright install --with-deps chromium
       - run: npm run e2e
       - uses: actions/upload-artifact@v4
@@ -50,3 +47,24 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # Deploys the checked commit to Vercel production. Armed by setting the
+  # VERCEL_DEPLOY_ENABLED repository variable to "true" once a dashboard-made
+  # VERCEL_TOKEN secret exists (CLI session tokens expire within hours, so
+  # they are not usable here).
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.VERCEL_DEPLOY_ENABLED == 'true'
+    needs: [test, e2e]
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm i -g vercel@58
+      - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
