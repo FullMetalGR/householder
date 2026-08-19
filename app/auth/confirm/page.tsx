@@ -1,20 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
-import { safeNext } from "@/lib/safe-next";
+import { confirmNext } from "@/lib/safe-next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-// The email's `next` is the full RedirectTo URL; strip it down to a safe
-// same-origin path so the redirect can never leave the app.
-function toPath(raw: string): string {
-  try {
-    const url = new URL(raw);
-    return safeNext(url.pathname + url.search);
-  } catch {
-    return safeNext(raw);
-  }
-}
 
 // Renders a confirmation button; only its POST consumes the single-use
 // token_hash, so a GET from a mailbox prescanner or omnibox preload is inert.
@@ -37,7 +26,7 @@ export default async function ConfirmPage({
       token_hash: tokenHash,
     });
     if (error) redirect("/auth/confirm?error=expired");
-    redirect(toPath(next));
+    redirect(confirmNext(next));
   }
 
   return (

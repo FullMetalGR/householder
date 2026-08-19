@@ -22,3 +22,25 @@ export function safeNext(raw: string | null | undefined): string {
   }
   return path;
 }
+
+// Reduces the confirm page's `next` (the raw RedirectTo, usually a full URL)
+// to a safe app path. A callback-shaped target is unwrapped to its inner
+// `next`: sign-in sends /auth/callback?next=X so the default (PKCE) email
+// template keeps working, but after a token_hash confirm the code exchange
+// never happens, so the user should land on X directly.
+export function confirmNext(raw: string | null | undefined): string {
+  if (!raw) return "/";
+  let path = raw;
+  try {
+    const url = new URL(raw);
+    path = url.pathname + url.search;
+  } catch {
+    // not a full URL: treat as a path
+  }
+  const safe = safeNext(path);
+  if (safe.startsWith("/auth/callback")) {
+    const inner = new URL(safe, "http://localhost").searchParams.get("next");
+    return safeNext(inner);
+  }
+  return safe;
+}

@@ -29,11 +29,11 @@ function SignInForm() {
   async function sendMagicLink(e: React.FormEvent) {
     e.preventDefault();
     setSending(true);
-    // The email template threads this URL through as the confirm page's
-    // `next`; the token_hash link itself is built from the Site URL.
+    // Callback-shaped so the default (PKCE) email template still signs in;
+    // a token_hash template threads it to /auth/confirm, which unwraps it.
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${location.origin}${next}` },
+      options: { emailRedirectTo: callback() },
     });
     setSending(false);
     if (error) toast.error(t("linkError"));
