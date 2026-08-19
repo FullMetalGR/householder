@@ -39,7 +39,15 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx supabase start
-      - run: npx playwright install --with-deps chromium
+      # Browser install hits apt, which intermittently hangs on GitHub's
+      # mirrors; fail fast and retry once instead of stalling the whole run.
+      - id: playwright-install
+        run: npx playwright install --with-deps chromium
+        timeout-minutes: 4
+        continue-on-error: true
+      - if: steps.playwright-install.outcome == 'failure'
+        run: npx playwright install --with-deps chromium
+        timeout-minutes: 6
       - run: npm run e2e
       - uses: actions/upload-artifact@v4
         if: failure()
