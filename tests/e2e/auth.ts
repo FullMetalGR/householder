@@ -14,6 +14,8 @@ export async function signIn(page: Page, email: string) {
   await page.getByRole("button", { name: "Στείλε μου σύνδεσμο" }).click();
   const link = await magicLinkFor(email);
   await page.goto(link);
+  // The link lands on the confirm page; only the button's POST verifies.
+  await page.getByRole("button", { name: "Σύνδεση", exact: true }).click();
   for (let attempt = 0; ; attempt++) {
     try {
       await page.waitForURL("**/onboarding", { timeout: 10_000 });

@@ -15,7 +15,7 @@ export async function magicLinkFor(email: string, timeoutMs = 20_000): Promise<s
     if (msg) {
       const detail = await fetch(`${MAILPIT}/api/v1/message/${msg.ID}`);
       const data = (await detail.json()) as { Text: string };
-      const match = data.Text.match(/https?:\/\/[^\s)>\]]+verify[^\s)>\]]*/);
+      const match = data.Text.match(/https?:\/\/[^\s)>\]]+auth\/confirm[^\s)>\]]*/);
       if (match) return match[0];
     }
     await new Promise((r) => setTimeout(r, 500));

@@ -6,7 +6,11 @@
     "emailPlaceholder": "Your email",
     "magicLink": "Send me a link",
     "linkSent": "Link sent. Check your email.",
-    "linkError": "Something went wrong. Try again."
+    "linkError": "Something went wrong. Try again.",
+    "confirmHint": "Press the button to finish signing in.",
+    "confirmCta": "Sign in",
+    "confirmExpired": "The link has expired or was already used.",
+    "confirmRetry": "Request a new link"
   },
   "onboarding": {
     "title": "Welcome",
