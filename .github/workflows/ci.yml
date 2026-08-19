@@ -65,6 +65,7 @@ jobs:
         with:
           node-version: 22
       - run: npm i -g vercel@58
-      - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      - run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+      # Build remotely on Vercel: the project's env vars are stored as
+      # Sensitive, which `vercel pull` cannot download, so an on-runner
+      # prebuilt flow bakes empty NEXT_PUBLIC_* values into the bundle.
+      - run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
